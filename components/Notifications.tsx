@@ -106,12 +106,14 @@ function NotificationItem({ notification, onRemove }: NotificationItemProps) {
 
   useEffect(() => {
     // Trigger entrance animation
-    setTimeout(() => setIsVisible(true), 50);
+    const animationTimer = setTimeout(() => setIsVisible(true), 50);
+    return () => clearTimeout(animationTimer);
   }, []);
 
   const handleRemove = () => {
     setIsLeaving(true);
-    setTimeout(onRemove, 300); // Match animation duration
+    const removeTimer = setTimeout(onRemove, 300); // Match animation duration
+    return () => clearTimeout(removeTimer);
   };
 
   const getIcon = () => {

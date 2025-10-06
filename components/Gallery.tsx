@@ -196,26 +196,24 @@ export default function Gallery({ onImageSelect, onImageDelete, refreshTrigger }
         <form onSubmit={handleSearch} className="space-y-6">
           {/* Search Bar */}
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search images by title or description..."
-              className="pl-10 pr-4 py-4 w-full text-lg"
+              className="pl-10 pr-32 py-4 w-full text-lg rounded-lg"
             />
-            <button
-              type="submit"
-              className="absolute inset-y-0 right-0 flex items-center pr-3"
-            >
-              <div className="btn-primary px-6 py-2 text-sm">
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <button
+                type="submit"
+                className="btn-primary px-6 py-2 text-sm flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 Search
-              </div>
-            </button>
+              </button>
+            </div>
           </div>
 
           {/* Filter Grid */}
@@ -242,7 +240,7 @@ export default function Gallery({ onImageSelect, onImageDelete, refreshTrigger }
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'createdAt' | 'updatedAt' | 'title')}
-                className="w-full"
+                className="w-full pr-8 appearance-none bg-[length:20px_20px] bg-[right_12px_center] bg-no-repeat bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%20aria-hidden%3D%22true%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')]"
               >
                 <option value="createdAt">Date Created</option>
                 <option value="updatedAt">Date Updated</option>
@@ -258,7 +256,7 @@ export default function Gallery({ onImageSelect, onImageDelete, refreshTrigger }
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-                className="w-full"
+                className="w-full pr-8 appearance-none bg-[length:20px_20px] bg-[right_12px_center] bg-no-repeat bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%20aria-hidden%3D%22true%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')]"
               >
                 <option value="desc">Newest First</option>
                 <option value="asc">Oldest First</option>
@@ -276,7 +274,7 @@ export default function Gallery({ onImageSelect, onImageDelete, refreshTrigger }
                   const value = e.target.value;
                   setShowPublicOnly(value === 'all' ? undefined : value === 'true');
                 }}
-                className="w-full"
+                className="w-full pr-8 appearance-none bg-[length:20px_20px] bg-[right_12px_center] bg-no-repeat bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%20aria-hidden%3D%22true%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')]"
               >
                 <option value="all">All Images</option>
                 <option value="true">Public Only</option>
@@ -318,17 +316,23 @@ export default function Gallery({ onImageSelect, onImageDelete, refreshTrigger }
           )}
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-4">
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="btn-secondary px-4 py-2 text-sm"
-            >
-              Clear Filters
-            </button>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center justify-between mt-4">
+            <div className="flex items-center">
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="btn-secondary px-4 py-2 text-sm flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Clear Filters
+              </button>
+            </div>
 
             {/* View Mode Toggle */}
-            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}

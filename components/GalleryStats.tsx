@@ -74,13 +74,13 @@ export default function GalleryStats({ refreshTrigger }: GalleryStatsProps) {
 
   useEffect(() => {
     loadAllData();
-  }, []);
+  }, [loadAllData]);
 
   useEffect(() => {
     if (refreshTrigger !== undefined && refreshTrigger > 0) {
       loadAllData();
     }
-  }, [refreshTrigger]);
+  }, [refreshTrigger, loadAllData]);
 
   useEffect(() => {
     if (error) {
@@ -88,14 +88,24 @@ export default function GalleryStats({ refreshTrigger }: GalleryStatsProps) {
     }
   }, [error, notify]);
 
+  // Track if we've shown the warning for the current sync status
+  const [hasShownSyncWarning, setHasShownSyncWarning] = useState(false);
+
   useEffect(() => {
-    if (syncStatus && !syncStatus.inSync && syncStatus.discrepancies.length > 0) {
+    // Only show warning if there are discrepancies and we haven't shown it yet
+    if (syncStatus && !syncStatus.inSync && syncStatus.discrepancies.length > 0 && !hasShownSyncWarning) {
       notify.warning(
         'Sync Issues Detected',
-        `Found ${syncStatus.discrepancies.length} synchronization discrepancies between MongoDB and Cloudinary.`
+        `Found ${syncStatus.discrepancies.length} synchronization discrepancies between MongoDB and Cloudinary.`,
+        { duration: 0 } // Make it stay until manually dismissed
       );
+      setHasShownSyncWarning(true);
     }
-  }, [syncStatus, notify]);
+    // Reset the warning flag when sync status changes to in-sync
+    else if ((!syncStatus || syncStatus.inSync || syncStatus.discrepancies.length === 0) && hasShownSyncWarning) {
+      setHasShownSyncWarning(false);
+    }
+  }, [syncStatus, notify, hasShownSyncWarning]);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -221,19 +231,21 @@ export default function GalleryStats({ refreshTrigger }: GalleryStatsProps) {
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           Gallery Analytics
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Monitor your gallery performance, storage usage, and synchronization status
         </p>
-        <button
-          onClick={handleRefreshClick}
-          disabled={loading || syncLoading}
-          className="btn-secondary px-6 py-3 disabled:opacity-50"
-        >
-          <svg className={`w-4 h-4 mr-2 ${loading || syncLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Refresh Data
-        </button>
+        <div className="mt-8">
+          <button
+            onClick={handleRefreshClick}
+            disabled={loading || syncLoading}
+            className="btn-secondary px-6 py-3 disabled:opacity-50 inline-flex items-center"
+          >
+            <svg className={`w-4 h-4 mr-2 ${loading || syncLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh Data
+          </button>
+        </div>
       </div>
 
       {/* Image Statistics */}
@@ -305,7 +317,7 @@ export default function GalleryStats({ refreshTrigger }: GalleryStatsProps) {
           <button
             onClick={handleSyncCheck}
             disabled={syncLoading}
-            className="btn-secondary px-4 py-2 text-sm disabled:opacity-50"
+            className="btn-secondary px-4 py-2 text-sm disabled:opacity-50 inline-flex items-center"
           >
             <svg className={`w-4 h-4 mr-2 ${syncLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
